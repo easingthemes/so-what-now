@@ -1,0 +1,36 @@
+:root {
+  --bg: #fbfaf7; --fg: #1d1d1b; --muted: #6b6a66; --line: #e4e1da; --link: #1f5fbf; --code: #f1eee8;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #161615; --fg: #e8e6e1; --muted: #9a978f; --line: #2e2d2a; --link: #7fb0ff; --code: #22211f; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.65 var(--font); }
+a { color: var(--link); }
+.top { padding: 18px 24px; border-bottom: 1px solid var(--line); display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+.brand { font-weight: 700; font-size: 1.15rem; color: var(--fg); text-decoration: none; }
+.tag { color: var(--muted); font-size: .92rem; }
+.wrap { display: flex; gap: 40px; max-width: 1080px; margin: 0 auto; padding: 32px 24px; }
+.side { flex: 0 0 220px; font-size: .93rem; }
+.side ul { list-style: none; margin: 0 0 18px; padding: 0; }
+.side li { margin: 4px 0; }
+.side a { color: var(--fg); text-decoration: none; }
+.side a[aria-current="page"] { color: var(--link); font-weight: 600; }
+.section { margin: 0 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; }
+.prose { flex: 1; min-width: 0; max-width: 720px; }
+.prose h1 { font-size: 2rem; line-height: 1.2; margin-top: 0; }
+.prose h2 { margin-top: 2.2em; }
+.prose code { font-family: var(--mono); font-size: .88em; background: var(--code); padding: .1em .35em; border-radius: 4px; }
+.prose pre { background: var(--code); padding: 14px 16px; border-radius: 6px; overflow-x: auto; }
+.prose pre code { background: none; padding: 0; }
+.prose table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+.prose th, .prose td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.prose blockquote { margin: 0; padding-left: 16px; border-left: 3px solid var(--line); color: var(--muted); }
+.updated { color: var(--muted); font-size: .85rem; margin-top: 3em; }
+.foot { border-top: 1px solid var(--line); padding: 18px 24px; color: var(--muted); font-size: .88rem; text-align: center; }
+@media (max-width: 760px) {
+  .wrap { flex-direction: column; gap: 8px; padding: 20px 16px; }
+  .side { flex: none; }
+}

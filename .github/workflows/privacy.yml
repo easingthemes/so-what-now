@@ -1,0 +1,50 @@
+name: Privacy check
+
+# This repo will be public. Fails a PR or push whose diff, file paths, commit
+# messages, PR title or body contain an entry from the PRIVATE_DENYLIST
+# repository secret (newline- or comma-separated extended regexes,
+# case-insensitive). The list is a secret because committing it would publish
+# the names it guards. Output names the location and entry number only.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  denylist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Scan
+        # PR text reaches the script through env, never ${{ }} inside `run`.
+        env:
+          PRIVATE_DENYLIST: ${{ secrets.PRIVATE_DENYLIST }}
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if [ -z "$PRIVATE_DENYLIST" ]; then
+            echo "::error::PRIVATE_DENYLIST secret is not set - names are not checked"
+            exit 1
+          fi
+          rc=0
+          if [ "$EVENT" = "pull_request" ]; then
+            bash scripts/check-private.sh diff "origin/$BASE_REF" || rc=1
+            printf '%s\n' "$PR_TITLE" | bash scripts/check-private.sh text "PR title" || rc=1
+            printf '%s\n' "$PR_BODY"  | bash scripts/check-private.sh text "PR body"  || rc=1
+          else
+            bash scripts/check-private.sh all || rc=1
+          fi
+          exit $rc
+      - name: Validate content
+        run: bash scripts/validate.sh

@@ -1,0 +1,19 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { publishedPages, slugOf } from '../lib';
+
+export async function getStaticPaths() {
+  return (await publishedPages()).map((page) => ({
+    params: { slug: slugOf(page) || undefined },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+<Base title={page.data.title} description={page.data.description} updated={page.data.updated}>
+  <h1>{page.data.title}</h1>
+  <Content />
+</Base>
